@@ -23,7 +23,7 @@ class Student:
             return content
 
     def __validate_mark(self, mark: float) -> float:
-        if mark in [2, 2.5, 3, 3.5, 4, 4.5, 5]:
+        if mark in [2, 3, 3.5, 4, 4.5, 5]:
             return mark
         else:
             raise ValueError("przyjmuję tylko studenckie oceny")
@@ -42,6 +42,10 @@ class Student:
 
     def delete_mark(self, mark_id: int) -> None:
         del self.__marks[self.__validate_mark_id(mark_id)]
+
+    @property
+    def mean(self) -> float:
+        return round(sum(self.__marks)/len(self.__marks), 2)
 
     @property
     def name(self) -> str:

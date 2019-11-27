@@ -64,46 +64,102 @@ def test_student_edit_wrong(name, surname, student_id):
         student.id = student_id
 
 
-# TODO: poprawić
-@pytest.mark.parametrize("mark", [2, 2.5, 3, 3.5, 4, 4.5, 5])
-def test_student_add_mark(mark):
+@pytest.mark.parametrize("marks", [[2, 3], [3, 3.5, 4, 4.5, 5]])
+def test_student_add_mark(marks):
     # given
     student = Student("Qwerty", "Azerty", "000001")
     # when
-    student.add_mark(mark)
+    for mark in marks:
+        student.add_mark(mark)
     # then
-    assert mark in student.marks
+    for mark in marks:
+        assert mark in student.marks
 
 
-# TODO: poprawić
 @pytest.mark.parametrize("mark", [-2, 1, 1.5, 2.25, 3.01, 5.5, 6])
 def test_student_add_mark_wrong(mark):
     # given
     student = Student("Qwerty", "Azerty", "000001")
+    student.add_mark(3)
+    student.add_mark(4)
     # then
     with pytest.raises(ValueError):
         # when
         student.add_mark(mark)
 
 
-# TODO: poprawić
-@pytest.mark.parametrize("mark", [2, 2.5, 3, 3.5, 4, 4.5, 5])
-def test_student_edit_mark(mark):
+@pytest.mark.parametrize(
+    "mark_id, mark", [(0, 2), (1, 3), (2, 3), (1, 3.5), (0, 4), (1, 4.5), (2, 5)]
+)
+def test_student_edit_mark(mark_id, mark):
     # given
     student = Student("Qwerty", "Azerty", "000001")
+    student.add_mark(3)
+    student.add_mark(2)
+    student.add_mark(2)
     # when
-    student.add_mark(mark)
+    student.edit_mark(mark_id, mark)
     # then
-    assert mark in student.marks
-    pass
+    assert mark == student.marks[mark_id]
 
 
-def test_student_delete_mark():
-    pass
+@pytest.mark.parametrize(
+    "mark_id, mark",
+    [(-1, 2), (3, 3), (4, 3), (-2, 3.5), (0, 4.25), (1, 2.75), (2, 5.5)],
+)
+def test_student_edit_mark_wrong(mark_id, mark):
+    # given
+    student = Student("Qwerty", "Azerty", "000001")
+    student.add_mark(3)
+    student.add_mark(2)
+    student.add_mark(2)
+    # then
+    with pytest.raises(ValueError):
+        # when
+        student.edit_mark(mark_id, mark)
 
 
-def test_student_mean():
-    pass
+@pytest.mark.parametrize("mark_id", [0, 1, 2])
+def test_student_delete_mark(mark_id):
+    # given
+    student = Student("Qwerty", "Azerty", "000001")
+    student.add_mark(2)
+    student.add_mark(3)
+    student.add_mark(4)
+    tmp_marks = student.marks.copy()
+    # when
+    student.delete_mark(mark_id)
+    # then
+    assert tmp_marks[mark_id] not in student.marks
+    assert len(student.marks) == 2
+
+
+@pytest.mark.parametrize("mark_id", [-1, 3, 4])
+def test_student_delete_mark_wrong(mark_id):
+    # given
+    student = Student("Qwerty", "Azerty", "000001")
+    student.add_mark(2)
+    student.add_mark(3)
+    student.add_mark(4)
+    # then
+    with pytest.raises(ValueError):
+        # when
+        student.delete_mark(mark_id)
+
+
+@pytest.mark.parametrize(
+    "marks, mean",
+    [([2, 3, 4], 3), ([3, 3, 3], 3), ([2, 3.5, 3.5], 3), ([5, 4.5, 5], 4.83), ([2], 2)],
+)
+def test_student_mean(marks, mean):
+    # given
+    student = Student("Qwerty", "Azerty", "000001")
+    for mark in marks:
+        student.add_mark(mark)
+    # when
+    stud_mean = student.mean
+    # then
+    assert stud_mean == mean
 
 
 def test_student_add_meet():
