@@ -11,7 +11,9 @@ from src.student import Student
     ],
 )
 def test_student_init(name, surname, student_id):
+    # when
     student = Student(name, surname, student_id)
+    # then
     assert student.name is name
     assert student.surname is surname
     assert student.id is student_id
@@ -39,10 +41,13 @@ def test_student_init_wrong(name, surname, student_id):
     ],
 )
 def test_student_edit(name, surname, student_id):
+    # given
     student = Student(name, surname, student_id)
+    # when
     student.name = name + "a"
     student.surname = surname + "b"
     student.id = student_id + "1"
+    # then
     assert student.name == (name + "a")
     assert student.surname == (surname + "b")
     assert student.id == (student_id + "1")
@@ -57,8 +62,11 @@ def test_student_edit(name, surname, student_id):
     ],
 )
 def test_student_edit_wrong(name, surname, student_id):
+    # given
     student = Student("Qwerty", "Azerty", "000001")
+    # then
     with pytest.raises(ValueError):
+        # when
         student.name = name
         student.surname = surname
         student.id = student_id
@@ -161,6 +169,7 @@ def test_student_mean(marks, mean):
     # then
     assert stud_mean == mean
 
+
 @pytest.mark.parametrize("dates", [["27.11.2019", "28.11.2019"], ["03.01.2020"]])
 def test_student_add_meet(dates):
     # given
@@ -169,7 +178,8 @@ def test_student_add_meet(dates):
         # when
         student.add_meet(date)
     # then
-    assert dates is len(student.meets)
+    assert len(dates) == len(student.meets)
+
 
 @pytest.mark.parametrize("date", ["32.11.2019", "28.13.2019", "03-01-2020"])
 def test_student_add_meet_wrong(date):
@@ -180,6 +190,7 @@ def test_student_add_meet_wrong(date):
         # when
         student.add_meet(date)
 
+
 @pytest.mark.parametrize("presence", ["O", "S", "N", "U"])
 def test_student_set_presence(presence):
     # given
@@ -189,7 +200,8 @@ def test_student_set_presence(presence):
     # when
     student.set_presence(date, presence)
     # then
-    assert presence == student.meets(date)
+    assert presence == student.meets[date]
+
 
 @pytest.mark.parametrize("presence", ["X", "o", "/", "s"])
 def test_student_set_presence_wrong(presence):
@@ -213,7 +225,8 @@ def test_student_edit_presence(presence):
     # when
     student.set_presence(date, presence)
     # then
-    assert presence == student.meets(date)
+    assert presence == student.meets[date]
+
 
 @pytest.mark.parametrize("presence", ["X", "o", "/", "s"])
 def test_student_edit_presence_wrong(presence):
@@ -227,23 +240,33 @@ def test_student_edit_presence_wrong(presence):
         # when
         student.set_presence(date, presence)
 
-@pytest.mark.parametrize("date,presence,no_a", [("28.11.2019","O",0), ("27.11.2019","N",1)])
+
+@pytest.mark.parametrize(
+    "date,presence,no_a", [("28.11.2019", "O", 0), ("27.11.2019", "N", 1)]
+)
 def test_student_number_absent(date, presence, no_a):
     # given
     student = Student("Qwerty", "Azerty", "000001")
     student.add_meet(date)
     student.set_presence(date, presence)
     # when
-    tmp_num=student.number_absent
+    tmp_num = student.number_absent
     # then
-    assert tmp_num==no_a
+    assert tmp_num == no_a
+
 
 def test_student_get_json():
+    # given
     student = Student("Qwerty", "Azerty", "000001")
-    student.add_meet(date)
-    student.set_presence(date, presence)
-
-
-def test_student_set_json():
-    pass
+    student.add_mark(5)
+    student.add_meet("27.11.2019")
+    student.set_presence("27.11.2019", "O")
+    # when
+    tmp_dict = student.make_json()
+    # then
+    assert tmp_dict["name"] == "Qwerty"
+    assert tmp_dict["surname"] == "Azerty"
+    assert tmp_dict["id"] == "000001"
+    assert tmp_dict["marks"][0] == 5
+    assert tmp_dict["meets"]["27.11.2019"] == "O"
 
