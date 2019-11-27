@@ -26,6 +26,14 @@ def test_add_student(name, surname, student_id):
     # then
     assert group.students[0].id == student_id
 
+def test_add_student_wrong():
+    # given
+    group = Group()
+    group.add_student("Qwerty", "Azerty", "000001")
+    # then
+    with pytest.raises(ValueError):
+        # when
+        group.add_student("Qwerty", "Azerty", "000001")
 
 @pytest.mark.parametrize(
     "name, surname, student_id",
@@ -43,6 +51,14 @@ def test_delete_student(name, surname, student_id):
     group.delete_student(student_id)
     # then
     assert len(group.students) == 0
+
+def test_delete_student_wrong():
+    # given
+    group = Group()
+    # then
+    with pytest.raises(ValueError):
+        # when
+        group.delete_student("000001")
 
 
 def test_add_meet():

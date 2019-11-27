@@ -201,6 +201,9 @@ def test_student_set_presence(presence):
     student.set_presence(date, presence)
     # then
     assert presence == student.meets[date]
+    with pytest.raises(ValueError):
+        # when
+        student.set_presence("29.11.2019", presence)
 
 
 @pytest.mark.parametrize("presence", ["X", "o", "/", "s"])
