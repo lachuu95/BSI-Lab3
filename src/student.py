@@ -1,4 +1,5 @@
-from typing import List
+from datetime import datetime
+from typing import List,Dict
 
 
 class Student:
@@ -7,6 +8,7 @@ class Student:
         self.__surname = self.__validate_str(surname)
         self.__id = self.__validate_num(id)
         self.__marks = []
+        self.__meets = {}
 
     def __validate_str(self, content: str) -> str:
         if not content.isalpha():
@@ -43,6 +45,53 @@ class Student:
     def delete_mark(self, mark_id: int) -> None:
         del self.__marks[self.__validate_mark_id(mark_id)]
 
+    def __validate_date(self, date:str)->str:
+        try:
+            datetime.datetime.strptime(date, "%d.%m.%Y")
+        except ValueError:
+            raise ValueError("chce date w formacie DD.MM.YYYY")
+
+    def __validate_meet(self, date:str)->str:
+        if date in self.__meets:
+            return self.__validate_date(date)
+        else:
+            raise ValueError("brak daty w spotkaniach")
+
+    def __validate_presence(self, char:str)->str:
+        if char in ["O","S","N","U"]:
+            return char
+        else:
+            raise ValueError("przyjmuję tylko literki O,S,N,U")
+
+    def add_meet(self, date:str)->None:
+        self.__meets[self.__validate_meet(date)]=None
+
+    def set_presence(self, date:str, char:str)->None:
+        self.__meets[self.__validate_meet(date)]=self.__validate_presence(char)
+
+    def make_json(self)->Dict[str,str]:
+        stud_dict={}
+        stud_dict["name"]=self.__name
+        stud_dict["surname"]=self.__surname
+        stud_dict["id"]=self.__id
+        stud_dict["marks"]=self.__marks
+        stud_dict["meets"]=self.__meets
+        return stud_dict
+
+    def read_json(self, stud_dict:Dict[str,str])->None:
+        self.name=stud_dict["name"]
+        self.surname=stud_dict["surname"]
+        self.id=stud_dict["id"]
+        for mark in stud_dict["marks"]:
+            self.add_mark(mark)
+        for date, presence in stud_dict["meets"].items():
+            self.add_meet(date)
+            self.set_presence(date, presence)
+
+    @property
+    def number_absent(self)->int:
+        return sum(x == "N" for x in self.__meets.values())
+
     @property
     def mean(self) -> float:
         return round(sum(self.__marks)/len(self.__marks), 2)
@@ -62,6 +111,10 @@ class Student:
     @property
     def marks(self) -> List[float]:
         return self.__marks
+
+    @property
+    def meets(self) -> Dict[str,str]:
+        return self.__meets
 
     @name.setter
     def name(self, value: str) -> None:

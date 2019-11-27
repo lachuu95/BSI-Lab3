@@ -161,25 +161,87 @@ def test_student_mean(marks, mean):
     # then
     assert stud_mean == mean
 
+@pytest.mark.parametrize("dates", [["27.11.2019", "28.11.2019"], ["03.01.2020"]])
+def test_student_add_meet(dates):
+    # given
+    student = Student("Qwerty", "Azerty", "000001")
+    for date in dates:
+        # when
+        student.add_meet(date)
+    # then
+    assert dates is len(student.meets)
 
-def test_student_add_meet():
-    pass
+@pytest.mark.parametrize("date", ["32.11.2019", "28.13.2019", "03-01-2020"])
+def test_student_add_meet_wrong(date):
+    # given
+    student = Student("Qwerty", "Azerty", "000001")
+    # then
+    with pytest.raises(ValueError):
+        # when
+        student.add_meet(date)
+
+@pytest.mark.parametrize("presence", ["O", "S", "N", "U"])
+def test_student_set_presence(presence):
+    # given
+    date = "28.11.2019"
+    student = Student("Qwerty", "Azerty", "000001")
+    student.add_meet(date)
+    # when
+    student.set_presence(date, presence)
+    # then
+    assert presence == student.meets(date)
+
+@pytest.mark.parametrize("presence", ["X", "o", "/", "s"])
+def test_student_set_presence_wrong(presence):
+    # given
+    date = "28.11.2019"
+    student = Student("Qwerty", "Azerty", "000001")
+    student.add_meet(date)
+    # then
+    with pytest.raises(ValueError):
+        # when
+        student.set_presence(date, presence)
 
 
-def test_student_set_presence():
-    pass
+@pytest.mark.parametrize("presence", ["O", "S", "N", "U"])
+def test_student_edit_presence(presence):
+    # given
+    date = "28.11.2019"
+    student = Student("Qwerty", "Azerty", "000001")
+    student.add_meet(date)
+    student.set_presence(date, "O")
+    # when
+    student.set_presence(date, presence)
+    # then
+    assert presence == student.meets(date)
 
+@pytest.mark.parametrize("presence", ["X", "o", "/", "s"])
+def test_student_edit_presence_wrong(presence):
+    # given
+    date = "28.11.2019"
+    student = Student("Qwerty", "Azerty", "000001")
+    student.add_meet(date)
+    student.set_presence(date, "O")
+    # then
+    with pytest.raises(ValueError):
+        # when
+        student.set_presence(date, presence)
 
-def test_student_edit_presence():
-    pass
-
-
-def test_student_number_absent():
-    pass
-
+@pytest.mark.parametrize("date,presence,no_a", [("28.11.2019","O",0), ("27.11.2019","N",1)])
+def test_student_number_absent(date, presence, no_a):
+    # given
+    student = Student("Qwerty", "Azerty", "000001")
+    student.add_meet(date)
+    student.set_presence(date, presence)
+    # when
+    tmp_num=student.number_absent
+    # then
+    assert tmp_num==no_a
 
 def test_student_get_json():
-    pass
+    student = Student("Qwerty", "Azerty", "000001")
+    student.add_meet(date)
+    student.set_presence(date, presence)
 
 
 def test_student_set_json():
