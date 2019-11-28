@@ -6,7 +6,6 @@ def bowling_score(rolls):
     is_spare = False
     for index, roll in enumerate(rolls):
         if frame == 10:
-            print(rolls[index], rolls[index - 1], index, len(rolls))
             if is_strike or is_spare:
                 if index + 2 < len(rolls):
                     raise ValueError("za duża ilość rzutów")
@@ -28,7 +27,7 @@ def bowling_score(rolls):
         elif not is_newframe:
             if rolls[index - 1] + roll > 10:
                 raise ValueError(
-                    f"nieprawidłowa liczba punktów drugiego rzutu  w frame {frame+1}"
+                    f"nieprawidłowa liczba punktów drugiego rzutu w frame {frame+1}"
                 )
             elif rolls[index - 1] + roll == 10:
                 if index + 1 >= len(rolls):

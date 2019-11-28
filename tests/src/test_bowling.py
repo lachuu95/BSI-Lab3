@@ -22,9 +22,9 @@ def test_bowling_score(rolls, score):
     [
         [10 for x in range(11)],
         [10 for x in range(13)],
-        # jeden rzut więcej VVVVV
+        # ostatni spare jeden rzut więcej VVVVV
         [9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 0, 0, 1],
-        # jeden rzut mniej VVVVV
+        # ostatni spare jeden rzut mniej VVVVV
         [9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1, 9, 1],
         [11, 0, 9, 0, 9, 0, 9, 0, 9, 0, 9, 0, 9, 0, 9, 0, 9, 0, 9, 0],
         [9, 9, 9, 0, 9, 0, 9, 0, 9, 0, 9, 0, 9, 0, 9, 0, 9, 0, 9, 0],
